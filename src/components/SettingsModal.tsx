@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Volume2, Music, Sun, Sparkles, Trash2, Sliders, Hash, Smartphone } from 'lucide-react';
+import { X, Volume2, Music, Sun, Sparkles, Trash2, Sliders, Hash, Smartphone, Download } from 'lucide-react';
 import { UserProfile } from '../types/game';
 import { sound } from '../utils/sound';
 import { vibrate, setHapticsEnabled } from '../utils/haptics';
@@ -216,6 +216,28 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               />
             </button>
           </div>
+        </div>
+
+        {/* Native Android Project Export */}
+        <div className="my-3 p-3 rounded-2xl bg-indigo-50/60 border border-indigo-100 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+              <Smartphone className="w-4 h-4" />
+            </div>
+            <div>
+              <span className="text-xs font-bold text-stone-900 block">Android Native App</span>
+              <span className="text-[10px] text-stone-500">Full Android Studio source (.zip)</span>
+            </div>
+          </div>
+          <a
+            href="/AxiomPath-Android-Native.zip"
+            download="AxiomPath-Android-Native.zip"
+            onClick={() => sound.playVictory()}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-xs transition-all active:scale-95 shrink-0"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Download</span>
+          </a>
         </div>
 
         {/* Reset Progress */}

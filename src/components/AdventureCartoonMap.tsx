@@ -46,8 +46,8 @@ interface AdventureCartoonMapProps {
   onLockedClick: (levelNumber: number) => void;
 }
 
-const STRIDE = 94;
-const MAP_TOP_PADDING = 84;
+const STRIDE = 70;
+const MAP_TOP_PADDING = 80;
 
 interface BiomeInfo {
   id: string;
@@ -220,7 +220,7 @@ export const AdventureCartoonMap: React.FC<AdventureCartoonMapProps> = ({
     }, 2800);
   };
 
-  const totalMapHeight = TOTAL_LEVELS * STRIDE + MAP_TOP_PADDING + 140;
+  const totalMapHeight = 7200;
 
   // Selected level inspection details
   const selectedDiffInfo = selectedLevel ? getLevelDifficultyInfo(selectedLevel) : null;
@@ -851,7 +851,7 @@ export const AdventureCartoonMap: React.FC<AdventureCartoonMapProps> = ({
         {/* ========================================================= */}
         <div
           className="relative"
-          style={{ height: `${totalMapHeight}px`, zIndex: 3 }}
+          style={{ height: '7200px', width: '341px', zIndex: 3 }}
         >
           {levels.map((lvl) => {
             const isCompleted = Boolean(profile.completedLevels[lvl]);
