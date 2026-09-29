@@ -16,7 +16,6 @@ import { BadgesModal } from './BadgesModal';
 import { getBadgeById } from '../utils/badges';
 import { sound } from '../utils/sound';
 import { AdventureCartoonMap } from './AdventureCartoonMap';
-import { PWAInstallButton } from './PWAInstallButton';
 
 interface HomeScreenProps {
   profile: UserProfile;
@@ -103,7 +102,31 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
       <div className="max-w-md mx-auto px-4 pt-3 space-y-3.5 relative z-10">
         {/* ========================================================= */}
-        {/* 1. HERO ACTIVE LEVEL CARD (Minimal & Fun)                  */}
+        {/* 1. ADVENTURE CARTOON MAP JOURNEY CONTAINER (Primary Hero) */}
+        {/* ========================================================= */}
+        <div className="relative pt-1">
+          <div className="flex items-center justify-between px-1 mb-2">
+            <div className="flex items-center gap-1.5 text-xs font-bold text-stone-700">
+              <MapIcon className="w-3.5 h-3.5 text-indigo-600" />
+              <span className="uppercase tracking-wider">Adventure Map</span>
+            </div>
+            <span className="text-xs font-semibold text-stone-600 font-mono-numbers">
+              {Object.keys(profile.completedLevels).length} / {TOTAL_LEVELS} Clear
+            </span>
+          </div>
+
+          {/* Adventure Cartoon Map Container */}
+          <AdventureCartoonMap
+            profile={profile}
+            targetLevel={targetLevel}
+            highestUnlocked={highestUnlocked}
+            onPlayLevel={onPlayLevel}
+            onLockedClick={handleLockedClick}
+          />
+        </div>
+
+        {/* ========================================================= */}
+        {/* 2. HERO ACTIVE LEVEL CARD (Below Journey Map)             */}
         {/* ========================================================= */}
         <div className="relative rounded-3xl bg-white p-4 sm:p-5 border border-stone-200/80 shadow-sm">
           <div className="flex items-center justify-between gap-3">
@@ -172,11 +195,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
         </div>
 
-        {/* Android Native Install Prompt Card (Auto-hides if installed) */}
-        <PWAInstallButton />
-
         {/* ========================================================= */}
-        {/* 2. WEEKLY STREAK & BADGES STRIP (Ultra-Clean)              */}
+        {/* 3. WEEKLY STREAK & BADGES STRIP                           */}
         {/* ========================================================= */}
         <div className="rounded-2xl bg-white p-3 border border-stone-200/70 shadow-xs flex items-center justify-between gap-2">
           {/* 7-day minimal dots */}
@@ -228,30 +248,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             {activeBadge && <span className="text-sm">{activeBadge.emoji}</span>}
             <ChevronRight className="w-3 h-3 text-stone-400" />
           </button>
-        </div>
-
-        {/* ========================================================= */}
-        {/* 3. ADVENTURE CARTOON MAP JOURNEY CONTAINER                */}
-        {/* ========================================================= */}
-        <div className="relative pt-1">
-          <div className="flex items-center justify-between px-1 mb-2">
-            <div className="flex items-center gap-1.5 text-xs font-bold text-stone-700">
-              <MapIcon className="w-3.5 h-3.5 text-indigo-600" />
-              <span className="uppercase tracking-wider">Adventure Map</span>
-            </div>
-            <span className="text-xs font-semibold text-stone-600 font-mono-numbers">
-              {Object.keys(profile.completedLevels).length} / {TOTAL_LEVELS} Clear
-            </span>
-          </div>
-
-          {/* Adventure Cartoon Map Container */}
-          <AdventureCartoonMap
-            profile={profile}
-            targetLevel={targetLevel}
-            highestUnlocked={highestUnlocked}
-            onPlayLevel={onPlayLevel}
-            onLockedClick={handleLockedClick}
-          />
         </div>
       </div>
 
