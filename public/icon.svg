@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5" />
+      <stop offset="100%" stop-color="#3730A3" />
+    </linearGradient>
+    <linearGradient id="pathGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCD34D" />
+      <stop offset="100%" stop-color="#F59E0B" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#1E1B4B" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <!-- Background Card -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)" />
+
+  <!-- Grid Blueprint dots -->
+  <g opacity="0.15" fill="#FFFFFF">
+    <circle cx="128" cy="128" r="8" />
+    <circle cx="256" cy="128" r="8" />
+    <circle cx="384" cy="128" r="8" />
+    <circle cx="128" cy="256" r="8" />
+    <circle cx="256" cy="256" r="8" />
+    <circle cx="384" cy="256" r="8" />
+    <circle cx="128" cy="384" r="8" />
+    <circle cx="256" cy="384" r="8" />
+    <circle cx="384" cy="384" r="8" />
+  </g>
+
+  <!-- Golden Connected Path -->
+  <path d="M 128 384 L 128 256 L 256 256 L 256 128 L 384 128 L 384 384"
+        fill="none"
+        stroke="url(#pathGrad)"
+        stroke-width="38"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        filter="url(#shadow)" />
+
+  <!-- Inner Sparkle Path Line -->
+  <path d="M 128 384 L 128 256 L 256 256 L 256 128 L 384 128 L 384 384"
+        fill="none"
+        stroke="#FFFFFF"
+        stroke-width="10"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        opacity="0.85" />
+
+  <!-- Checkpoint 1 -->
+  <g filter="url(#shadow)">
+    <circle cx="128" cy="384" r="36" fill="#FFFFFF" />
+    <circle cx="128" cy="384" r="28" fill="#4F46E5" />
+    <text x="128" y="394" font-family="system-ui, -apple-system, sans-serif" font-size="28" font-weight="900" fill="#FFFFFF" text-anchor="middle">1</text>
+  </g>
+
+  <!-- Checkpoint 2 -->
+  <g filter="url(#shadow)">
+    <circle cx="256" cy="128" r="36" fill="#FFFFFF" />
+    <circle cx="256" cy="128" r="28" fill="#F59E0B" />
+    <text x="256" y="138" font-family="system-ui, -apple-system, sans-serif" font-size="28" font-weight="900" fill="#FFFFFF" text-anchor="middle">2</text>
+  </g>
+
+  <!-- Checkpoint 3 (Final Target Star) -->
+  <g filter="url(#shadow)">
+    <circle cx="384" cy="384" r="38" fill="#FFFFFF" />
+    <circle cx="384" cy="384" r="30" fill="#10B981" />
+    <text x="384" y="394" font-family="system-ui, -apple-system, sans-serif" font-size="26" font-weight="900" fill="#FFFFFF" text-anchor="middle">★</text>
+  </g>
+</svg>

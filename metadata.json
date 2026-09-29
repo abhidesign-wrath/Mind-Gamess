@@ -1,0 +1,6 @@
+{
+  "name": "Axiom Path — Daily Mind & Logic Puzzle",
+  "description": "A minimalist daily logic puzzle. Connect numbered checkpoints along one continuous path through every cell on the grid.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
