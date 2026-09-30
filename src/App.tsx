@@ -20,11 +20,13 @@ import { StatisticsModal } from './components/StatisticsModal';
 import { SettingsModal } from './components/SettingsModal';
 import { RulesModal } from './components/RulesModal';
 import { BadgesModal } from './components/BadgesModal';
+import { Compass, Flame, Trophy, Settings } from 'lucide-react';
 
 export default function App() {
   const [profile, setProfile] = useState<UserProfile>(DEFAULT_PROFILE);
   const [currentScreen, setCurrentScreen] = useState<'HOME' | 'GAME'>('HOME');
   const [activePuzzle, setActivePuzzle] = useState<PuzzleData | null>(null);
+  const [activeTab, setActiveTab] = useState<'HOME' | 'STREAKS' | 'STATS' | 'SETTINGS'>('HOME');
 
   // Modals
   const [statsOpen, setStatsOpen] = useState(false);
@@ -204,20 +206,20 @@ export default function App() {
 
   const openStats = () => {
     sound.playModalOpen();
-    setStatsOpen(true);
+    setActiveTab('STATS');
   };
   const closeStats = () => {
     sound.playModalClose();
-    setStatsOpen(false);
+    setActiveTab('HOME');
   };
 
   const openSettings = () => {
     sound.playModalOpen();
-    setSettingsOpen(true);
+    setActiveTab('SETTINGS');
   };
   const closeSettings = () => {
     sound.playModalClose();
-    setSettingsOpen(false);
+    setActiveTab('HOME');
   };
 
   const openRules = () => {
@@ -231,16 +233,17 @@ export default function App() {
 
   const openBadges = () => {
     sound.playModalOpen();
-    setBadgesOpen(true);
+    setActiveTab('STREAKS');
   };
   const closeBadges = () => {
     sound.playModalClose();
-    setBadgesOpen(false);
+    setActiveTab('HOME');
   };
 
   const backToHome = () => {
     sound.playTap();
     setCurrentScreen('HOME');
+    setActiveTab('HOME');
   };
 
   return (
@@ -274,7 +277,7 @@ export default function App() {
 
       {/* Main Body View */}
       <main className="flex-1 flex flex-col">
-        {currentScreen === 'HOME' && (
+        {currentScreen === 'HOME' && activeTab === 'HOME' && (
           <HomeScreen
             profile={profile}
             onUpdateProfile={(updated) => setProfile(updated)}
@@ -285,6 +288,35 @@ export default function App() {
             onOpenStats={openStats}
             onOpenRules={openRules}
             onOpenSettings={openSettings}
+          />
+        )}
+
+        {currentScreen === 'HOME' && activeTab === 'STREAKS' && (
+          <BadgesModal
+            profile={profile}
+            onUpdateProfile={(updated) => setProfile(updated)}
+            completedThisWeek={Object.values(profile.dailyHistory).length}
+            isInline={true}
+          />
+        )}
+
+        {currentScreen === 'HOME' && activeTab === 'STATS' && (
+          <StatisticsModal
+            profile={profile}
+            isInline={true}
+          />
+        )}
+
+        {currentScreen === 'HOME' && activeTab === 'SETTINGS' && (
+          <SettingsModal
+            profile={profile}
+            onUpdateSettings={(newSettings) => {
+              const updated = { ...profile, settings: newSettings };
+              setProfile(updated);
+              saveUserProfile(updated);
+            }}
+            onResetData={handleResetData}
+            isInline={true}
           />
         )}
 
@@ -316,24 +348,6 @@ export default function App() {
       </main>
 
       {/* Modals */}
-      <StatisticsModal
-        isOpen={statsOpen}
-        onClose={closeStats}
-        profile={profile}
-      />
-
-      <SettingsModal
-        isOpen={settingsOpen}
-        onClose={closeSettings}
-        profile={profile}
-        onUpdateSettings={(newSettings) => {
-          const updated = { ...profile, settings: newSettings };
-          setProfile(updated);
-          saveUserProfile(updated);
-        }}
-        onResetData={handleResetData}
-      />
-
       <RulesModal
         isOpen={rulesOpen}
         onClose={closeRules}
@@ -345,13 +359,82 @@ export default function App() {
         }}
       />
 
-      <BadgesModal
-        isOpen={badgesOpen}
-        onClose={closeBadges}
-        profile={profile}
-        onUpdateProfile={(updated) => setProfile(updated)}
-        completedThisWeek={Object.values(profile.dailyHistory).length}
-      />
+      {/* Bottom Navigation Bar */}
+      {currentScreen === 'HOME' && (
+        <div
+          className={`fixed bottom-0 left-0 right-0 z-40 border-t border-stone-200/80 shadow-lg ${
+            profile.settings.theme === 'paper'
+              ? 'bg-[#FDFBF7]/95 backdrop-blur-md'
+              : 'bg-white/95 backdrop-blur-md'
+          }`}
+        >
+          <div className="max-w-md mx-auto px-4 h-16 grid grid-cols-4 items-center">
+            {/* Home Tab */}
+            <button
+              onClick={() => {
+                sound.playTap();
+                setActiveTab('HOME');
+              }}
+              className={`flex flex-col items-center justify-center h-full transition-colors ${
+                activeTab === 'HOME'
+                  ? 'text-indigo-600'
+                  : 'text-stone-400 hover:text-stone-700'
+              }`}
+            >
+              <Compass className="w-5.5 h-5.5" />
+              <span className="text-[10px] font-bold mt-1">Home</span>
+            </button>
+
+            {/* Streaks/Badges Tab */}
+            <button
+              onClick={() => {
+                sound.playModalOpen();
+                setActiveTab('STREAKS');
+              }}
+              className={`flex flex-col items-center justify-center h-full transition-colors ${
+                activeTab === 'STREAKS'
+                  ? 'text-indigo-600'
+                  : 'text-stone-400 hover:text-stone-700'
+              }`}
+            >
+              <Flame className="w-5.5 h-5.5" />
+              <span className="text-[10px] font-bold mt-1">Streaks</span>
+            </button>
+
+            {/* Stats Tab */}
+            <button
+              onClick={() => {
+                sound.playModalOpen();
+                setActiveTab('STATS');
+              }}
+              className={`flex flex-col items-center justify-center h-full transition-colors ${
+                activeTab === 'STATS'
+                  ? 'text-indigo-600'
+                  : 'text-stone-400 hover:text-stone-700'
+              }`}
+            >
+              <Trophy className="w-5.5 h-5.5" />
+              <span className="text-[10px] font-bold mt-1">Stats</span>
+            </button>
+
+            {/* Settings Tab */}
+            <button
+              onClick={() => {
+                sound.playModalOpen();
+                setActiveTab('SETTINGS');
+              }}
+              className={`flex flex-col items-center justify-center h-full transition-colors ${
+                activeTab === 'SETTINGS'
+                  ? 'text-indigo-600'
+                  : 'text-stone-400 hover:text-stone-700'
+              }`}
+            >
+              <Settings className="w-5.5 h-5.5" />
+              <span className="text-[10px] font-bold mt-1">Settings</span>
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -142,7 +142,7 @@ export const AdventureCartoonMap: React.FC<AdventureCartoonMapProps> = ({
   };
 
   const getNodeY = (lvl: number) => {
-    return (lvl - 1) * STRIDE + MAP_TOP_PADDING;
+    return (TOTAL_LEVELS - lvl) * STRIDE + MAP_TOP_PADDING;
   };
 
   // Scroll to target level node smoothly
@@ -172,7 +172,7 @@ export const AdventureCartoonMap: React.FC<AdventureCartoonMapProps> = ({
     // Approximate level at center
     const approximateLevel = Math.max(
       1,
-      Math.min(TOTAL_LEVELS, Math.round((centerPos - MAP_TOP_PADDING) / STRIDE) + 1)
+      Math.min(TOTAL_LEVELS, Math.round(TOTAL_LEVELS - (centerPos - MAP_TOP_PADDING) / STRIDE))
     );
 
     const currentBiome = BIOMES.find(
@@ -247,44 +247,6 @@ export const AdventureCartoonMap: React.FC<AdventureCartoonMapProps> = ({
             <span className="font-mono-numbers">{totalStars}</span>
             <span className="text-stone-400 font-normal">/ {TOTAL_LEVELS * 3} Stars</span>
           </div>
-
-          <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-stone-100 text-stone-600 font-semibold text-[11px]">
-            <Compass className="w-3.5 h-3.5 text-indigo-600 stroke-[2.5]" />
-            <span>Realm Map · World 1</span>
-          </div>
-        </div>
-
-        {/* Biome Region Quick-Jump Tabs */}
-        <div className="flex items-center justify-between gap-1">
-          <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5">
-            {BIOMES.map((biome) => {
-              const isSelected = activeTab === biome.id;
-              return (
-                <button
-                  key={biome.id}
-                  onClick={() => handleTabClick(biome)}
-                  className={`flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold transition-all shrink-0 active:scale-95 ${
-                    isSelected
-                      ? 'bg-indigo-600 text-white shadow-xs'
-                      : 'bg-white border border-stone-200/80 text-stone-600 hover:bg-stone-50'
-                  }`}
-                >
-                  <span>{biome.emoji}</span>
-                  <span>{biome.name}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Quick jump to current level */}
-          <button
-            onClick={handleJumpToCurrent}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-indigo-50 hover:bg-indigo-100/80 text-indigo-700 text-xs font-bold shrink-0 transition-all border border-indigo-200"
-            title="Snap to active level"
-          >
-            <MapPin className="w-3 h-3 fill-indigo-600 text-indigo-600" />
-            <span className="font-mono-numbers">Lv {targetLevel}</span>
-          </button>
         </div>
       </div>
 
@@ -468,7 +430,7 @@ export const AdventureCartoonMap: React.FC<AdventureCartoonMapProps> = ({
           {/* LEVEL 10: Milestone Treasure Chest */}
           <div
             className="absolute"
-            style={{ left: '10%', top: `${getNodeY(10) + 12}px` }}
+            style={{ left: '10%', top: `${getNodeY(10) - 12}px` }}
           >
             <SpriteTreasureChest
               isUnlocked={highestUnlocked >= 10}
@@ -488,7 +450,7 @@ export const AdventureCartoonMap: React.FC<AdventureCartoonMapProps> = ({
           {/* LEVEL 12: Whispering Brook River Crossing with Swimming Ducks */}
           <div
             className="absolute w-4/5 left-[10%] h-8 rounded-full bg-sky-200/70 border border-sky-300 flex items-center justify-between px-3 shadow-inner pointer-events-auto"
-            style={{ top: `${getNodeY(12) + 38}px` }}
+            style={{ top: `${getNodeY(12) - 35}px` }}
           >
             <span className="text-[10px] font-extrabold text-sky-800 tracking-wider">
               〰️ Whispering Brook
@@ -543,7 +505,7 @@ export const AdventureCartoonMap: React.FC<AdventureCartoonMapProps> = ({
           {/* LEVEL 20: Meadow Crest Milestone Chest */}
           <div
             className="absolute"
-            style={{ right: '10%', top: `${getNodeY(20) + 12}px` }}
+            style={{ right: '10%', top: `${getNodeY(20) - 12}px` }}
           >
             <SpriteTreasureChest
               isUnlocked={highestUnlocked >= 20}
@@ -563,7 +525,7 @@ export const AdventureCartoonMap: React.FC<AdventureCartoonMapProps> = ({
           {/* LEVEL 26: CANYON CHAPTER ENTRANCE BANNER */}
           <div
             className="absolute w-full flex justify-center pointer-events-none"
-            style={{ top: `${getNodeY(26) - 52}px` }}
+            style={{ top: `${getNodeY(26) + 35}px` }}
           >
             <div className="px-4 py-1.5 rounded-full bg-amber-100 border-2 border-amber-300 text-amber-900 text-xs font-extrabold shadow-sm flex items-center gap-1.5">
               <span>🏜️</span>
@@ -587,7 +549,7 @@ export const AdventureCartoonMap: React.FC<AdventureCartoonMapProps> = ({
           {/* LEVEL 30: Ancient Desert Cache */}
           <div
             className="absolute"
-            style={{ right: '10%', top: `${getNodeY(30) + 12}px` }}
+            style={{ right: '10%', top: `${getNodeY(30) - 12}px` }}
           >
             <SpriteTreasureChest
               isUnlocked={highestUnlocked >= 30}
@@ -635,7 +597,7 @@ export const AdventureCartoonMap: React.FC<AdventureCartoonMapProps> = ({
           {/* LEVEL 40: Canyon Cache */}
           <div
             className="absolute"
-            style={{ left: '10%', top: `${getNodeY(40) + 12}px` }}
+            style={{ left: '10%', top: `${getNodeY(40) - 12}px` }}
           >
             <SpriteTreasureChest
               isUnlocked={highestUnlocked >= 40}
@@ -655,7 +617,7 @@ export const AdventureCartoonMap: React.FC<AdventureCartoonMapProps> = ({
           {/* LEVEL 50: Grand Canyon Milestone */}
           <div
             className="absolute"
-            style={{ right: '8%', top: `${getNodeY(50) + 12}px` }}
+            style={{ right: '8%', top: `${getNodeY(50) - 12}px` }}
           >
             <SpriteTreasureChest
               isUnlocked={highestUnlocked >= 50}
@@ -675,7 +637,7 @@ export const AdventureCartoonMap: React.FC<AdventureCartoonMapProps> = ({
           {/* LEVEL 51: CORAL LAGOON CHAPTER BANNER */}
           <div
             className="absolute w-full flex justify-center pointer-events-none"
-            style={{ top: `${getNodeY(51) - 52}px` }}
+            style={{ top: `${getNodeY(51) + 35}px` }}
           >
             <div className="px-4 py-1.5 rounded-full bg-sky-100 border-2 border-sky-300 text-sky-900 text-xs font-extrabold shadow-sm flex items-center gap-1.5">
               <span>🌊</span>
@@ -695,7 +657,7 @@ export const AdventureCartoonMap: React.FC<AdventureCartoonMapProps> = ({
           {/* LEVEL 60: Sunken Treasure Chest */}
           <div
             className="absolute"
-            style={{ right: '10%', top: `${getNodeY(60) + 12}px` }}
+            style={{ right: '10%', top: `${getNodeY(60) - 12}px` }}
           >
             <SpriteTreasureChest
               isUnlocked={highestUnlocked >= 60}
@@ -727,7 +689,7 @@ export const AdventureCartoonMap: React.FC<AdventureCartoonMapProps> = ({
           {/* LEVEL 70: Tidal Cache */}
           <div
             className="absolute"
-            style={{ right: '9%', top: `${getNodeY(70) + 12}px` }}
+            style={{ right: '9%', top: `${getNodeY(70) - 12}px` }}
           >
             <SpriteTreasureChest
               isUnlocked={highestUnlocked >= 70}
@@ -755,7 +717,7 @@ export const AdventureCartoonMap: React.FC<AdventureCartoonMapProps> = ({
           {/* LEVEL 76: CELESTIAL SUMMIT CHAPTER BANNER */}
           <div
             className="absolute w-full flex justify-center pointer-events-none"
-            style={{ top: `${getNodeY(76) - 52}px` }}
+            style={{ top: `${getNodeY(76) + 35}px` }}
           >
             <div className="px-4 py-1.5 rounded-full bg-indigo-100 border-2 border-indigo-300 text-indigo-900 text-xs font-extrabold shadow-sm flex items-center gap-1.5">
               <span>🏔️</span>
@@ -783,7 +745,7 @@ export const AdventureCartoonMap: React.FC<AdventureCartoonMapProps> = ({
           {/* LEVEL 85: Mountain Summit Cache */}
           <div
             className="absolute"
-            style={{ left: '9%', top: `${getNodeY(85) + 12}px` }}
+            style={{ left: '9%', top: `${getNodeY(85) - 12}px` }}
           >
             <SpriteTreasureChest
               isUnlocked={highestUnlocked >= 85}

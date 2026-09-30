@@ -28,39 +28,39 @@ export const LandscapeBackground: React.FC<LandscapeBackgroundProps> = ({
       {/* ========================================================= */}
       {/* 1. SKY & TERRAIN BASE BIOME GRADIENTS                     */}
       {/* ========================================================= */}
-      {/* Zone 1: Sunny Meadow Sky & Rolling Pastures (Lv 1 - 25) */}
-      <div
-        className="absolute w-full bg-gradient-to-b from-[#EBF8EE] via-[#E4F5E8] to-[#FAF3E0]"
-        style={{
-          top: 0,
-          height: `${getNodeY(26)}px`,
-        }}
-      />
-
-      {/* Zone 2: Warm Canyon Sun & Desert Bluffs (Lv 26 - 50) */}
-      <div
-        className="absolute w-full bg-gradient-to-b from-[#FAF3E0] via-[#FDF0DE] to-[#E5F5F7]"
-        style={{
-          top: `${getNodeY(26)}px`,
-          height: `${getNodeY(51) - getNodeY(26)}px`,
-        }}
-      />
-
-      {/* Zone 3: Tropical Lagoon Sky & Coral Shores (Lv 51 - 75) */}
-      <div
-        className="absolute w-full bg-gradient-to-b from-[#E5F5F7] via-[#DEF3F6] to-[#ECE8F8]"
-        style={{
-          top: `${getNodeY(51)}px`,
-          height: `${getNodeY(76) - getNodeY(51)}px`,
-        }}
-      />
-
-      {/* Zone 4: Celestial Twilight Sky & Starlit Peaks (Lv 76 - 100) */}
+      {/* Zone 1: Celestial Twilight Sky & Starlit Peaks (Lv 76 - 100) */}
       <div
         className="absolute w-full bg-gradient-to-b from-[#ECE8F8] via-[#E2DCF7] to-[#D5CDF4]"
         style={{
+          top: 0,
+          height: `${getNodeY(76)}px`,
+        }}
+      />
+
+      {/* Zone 2: Tropical Lagoon Sky & Coral Shores (Lv 51 - 75) */}
+      <div
+        className="absolute w-full bg-gradient-to-b from-[#E5F5F7] via-[#DEF3F6] to-[#ECE8F8]"
+        style={{
           top: `${getNodeY(76)}px`,
-          height: `${totalMapHeight - getNodeY(76)}px`,
+          height: `${getNodeY(51) - getNodeY(76)}px`,
+        }}
+      />
+
+      {/* Zone 3: Warm Canyon Sun & Desert Bluffs (Lv 26 - 50) */}
+      <div
+        className="absolute w-full bg-gradient-to-b from-[#FAF3E0] via-[#FDF0DE] to-[#E5F5F7]"
+        style={{
+          top: `${getNodeY(51)}px`,
+          height: `${getNodeY(26) - getNodeY(51)}px`,
+        }}
+      />
+
+      {/* Zone 4: Sunny Meadow Sky & Rolling Pastures (Lv 1 - 25) */}
+      <div
+        className="absolute w-full bg-gradient-to-b from-[#EBF8EE] via-[#E4F5E8] to-[#FAF3E0]"
+        style={{
+          top: `${getNodeY(26)}px`,
+          height: `${totalMapHeight - getNodeY(26)}px`,
         }}
       />
 
@@ -69,7 +69,7 @@ export const LandscapeBackground: React.FC<LandscapeBackgroundProps> = ({
       {/* ========================================================= */}
       <svg
         className="absolute inset-0 w-full pointer-events-none"
-        style={{ height: `${totalMapHeight}px` }}
+        style={{ height: `${totalMapHeight}px`, transform: 'scaleY(-1)' }}
         viewBox={`0 0 400 ${totalMapHeight}`}
         preserveAspectRatio="none"
       >

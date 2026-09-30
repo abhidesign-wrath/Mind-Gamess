@@ -1,4 +1,318 @@
-package com.axiompath.game.ui
+import JSZip from 'jszip';
+
+export interface AndroidSourceFile {
+  path: string;
+  filename: string;
+  language: string;
+  description: string;
+  content: string;
+}
+
+export const ANDROID_FILES: AndroidSourceFile[] = [
+  {
+    path: 'settings.gradle.kts',
+    filename: 'settings.gradle.kts',
+    language: 'kotlin',
+    description: 'Project name & Gradle plugin repositories configuration',
+    content: `pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "AxiomPath"
+include(":app")
+`,
+  },
+  {
+    path: 'build.gradle.kts',
+    filename: 'build.gradle.kts (Root)',
+    language: 'kotlin',
+    description: 'Root Gradle build setup',
+    content: `plugins {
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.kotlin.compose) apply false
+}
+`,
+  },
+  {
+    path: 'gradle/libs.versions.toml',
+    filename: 'libs.versions.toml',
+    language: 'toml',
+    description: 'Gradle Version Catalog for Android SDK 35 & Jetpack Compose',
+    content: `[versions]
+agp = "8.6.1"
+kotlin = "2.0.21"
+coreKtx = "1.13.1"
+lifecycleRuntimeKtx = "2.8.6"
+activityCompose = "1.9.3"
+composeBom = "2024.10.00"
+
+[libraries]
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+`,
+  },
+  {
+    path: 'gradle/wrapper/gradle-wrapper.properties',
+    filename: 'gradle-wrapper.properties',
+    language: 'properties',
+    description: 'Gradle wrapper distribution config (v8.9)',
+    content: `distributionBase=GRADLE_USER_HOME
+distributionPath=wrapper/dists
+distributionUrl=https\\://services.gradle.org/distributions/gradle-8.9-bin.zip
+networkTimeout=10000
+validateDistributionUrl=true
+zipStoreBase=GRADLE_USER_HOME
+zipStorePath=wrapper/dists
+`,
+  },
+  {
+    path: 'app/build.gradle.kts',
+    filename: 'app/build.gradle.kts',
+    language: 'kotlin',
+    description: 'App module build script with Jetpack Compose & SDK 35',
+    content: `plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+}
+
+android {
+    namespace = "com.axiompath.game"
+    compileSdk = 35
+
+    defaultConfig {
+        applicationId = "com.axiompath.game"
+        minSdk = 24
+        targetSdk = 35
+        versionCode = 1
+        versionName = "1.0.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary = true
+        }
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+    buildFeatures {
+        compose = true
+    }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+}
+
+dependencies {
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.material3)
+    debugImplementation(libs.androidx.ui.tooling)
+}
+`,
+  },
+  {
+    path: 'app/proguard-rules.pro',
+    filename: 'proguard-rules.pro',
+    language: 'pro',
+    description: 'ProGuard release rules for Jetpack Compose',
+    content: `# Add project specific ProGuard rules here.
+-keepattributes *Annotation*
+-keepclassmembers class * {
+    @androidx.compose.runtime.Composable *;
+}
+`,
+  },
+  {
+    path: 'app/src/main/AndroidManifest.xml',
+    filename: 'AndroidManifest.xml',
+    language: 'xml',
+    description: 'Android App Manifest with launcher activity & permissions',
+    content: `<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AxiomPath">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AxiomPath">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
+`,
+  },
+  {
+    path: 'app/src/main/res/values/strings.xml',
+    filename: 'strings.xml',
+    language: 'xml',
+    description: 'App name strings',
+    content: `<resources>
+    <string name="app_name">Axiom Path</string>
+</resources>
+`,
+  },
+  {
+    path: 'app/src/main/res/values/colors.xml',
+    filename: 'colors.xml',
+    language: 'xml',
+    description: 'Color theme palette',
+    content: `<resources>
+    <color name="primary">#4F46E5</color>
+    <color name="primary_dark">#3730A3</color>
+    <color name="accent">#F59E0B</color>
+    <color name="background">#FAF8F5</color>
+</resources>
+`,
+  },
+  {
+    path: 'app/src/main/res/values/themes.xml',
+    filename: 'themes.xml',
+    language: 'xml',
+    description: 'Material Light theme definition',
+    content: `<resources>
+    <style name="Theme.AxiomPath" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">#4F46E5</item>
+        <item name="android:navigationBarColor">#FAF8F5</item>
+    </style>
+</resources>
+`,
+  },
+  {
+    path: 'app/src/main/java/com/axiompath/game/MainActivity.kt',
+    filename: 'MainActivity.kt',
+    language: 'kotlin',
+    description: 'Main activity entry point',
+    content: `package com.axiompath.game
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
+import com.axiompath.game.ui.AxiomPathApp
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MaterialTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    AxiomPathApp()
+                }
+            }
+        }
+    }
+}
+`,
+  },
+  {
+    path: 'app/src/main/java/com/axiompath/game/model/PuzzleModels.kt',
+    filename: 'PuzzleModels.kt',
+    language: 'kotlin',
+    description: 'Puzzle data classes, checkpoints, coordinates, and board models',
+    content: `package com.axiompath.game.model
+
+data class GridCoord(
+    val r: Int,
+    val c: Int
+)
+
+data class Checkpoint(
+    val number: Int,
+    val r: Int,
+    val c: Int
+)
+
+enum class PuzzleDifficulty {
+    EASY,
+    MEDIUM,
+    HARD
+}
+
+data class PuzzleData(
+    val id: String,
+    val levelNumber: Int,
+    val rows: Int,
+    val cols: Int,
+    val checkpoints: List<Checkpoint>,
+    val solution: List<GridCoord>,
+    val obstacles: Set<GridCoord> = emptySet()
+) {
+    val totalPlayableCells: Int get() = (rows * cols) - obstacles.size
+}
+`,
+  },
+  {
+    path: 'app/src/main/java/com/axiompath/game/ui/AxiomPathApp.kt',
+    filename: 'AxiomPathApp.kt',
+    language: 'kotlin',
+    description: 'Jetpack Compose game UI, interactive grid touch drag, and adventure map',
+    content: `package com.axiompath.game.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -252,7 +566,7 @@ fun GameScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Progress: ${path.size}/$totalPlayable cells",
+                text = "Progress: \${path.size}/$totalPlayable cells",
                 color = Color(0xFF4F46E5),
                 fontWeight = FontWeight.Bold,
                 fontSize = 13.sp
@@ -297,7 +611,9 @@ fun GameScreen(
                                         }
                                     )
                                     .clickable {
+                                        // Tap step logic
                                         if (isPath && coord != path.lastOrNull()) {
+                                            // Backtrack
                                             path = path.subList(0, pathIndex + 1)
                                         } else if (!isPath) {
                                             val last = path.last()
@@ -311,7 +627,7 @@ fun GameScreen(
                             ) {
                                 if (cp != null) {
                                     Text(
-                                        text = "${cp.number}",
+                                        text = "\${cp.number}",
                                         fontWeight = FontWeight.ExtraBold,
                                         fontSize = 14.sp,
                                         color = if (isHead) Color.White else if (isPath) Color(0xFF1E254A) else Color(0xFF4F46E5)
@@ -367,4 +683,64 @@ fun GameScreen(
             }
         }
     }
+}
+`,
+  },
+  {
+    path: 'README.md',
+    filename: 'README.md',
+    language: 'markdown',
+    description: 'Instructions to open, build, and run in Android Studio',
+    content: `# Axiom Path - Native Android App
+
+A pure native Android implementation of **Axiom Path** built with **Kotlin** & **Jetpack Compose**.
+
+## 🚀 How to Open in Android Studio
+
+1. Extract this zip folder to your computer.
+2. Open **Android Studio** (Ladybug, Iguana, Hedgehog, or newer).
+3. Select **File > Open** and choose the extracted \`AxiomPath\` folder.
+4. Android Studio will automatically recognize the Gradle build files and sync the dependencies.
+5. Click **Run 'app'** (or press \`Shift + F10\`) to launch the game on an emulator or physical device.
+
+## 📦 Building an APK / AAB
+- **Debug APK**: Run \`./gradlew assembleDebug\` (found in \`app/build/outputs/apk/debug/app-debug.apk\`).
+- **Release APK**: Run \`./gradlew assembleRelease\`.
+
+Enjoy crafting logic paths! 🐾
+`,
+  },
+];
+
+/**
+ * Live in-browser Zip file generator and downloader
+ */
+export async function generateAndDownloadAndroidZip(): Promise<void> {
+  const zip = new JSZip();
+  const rootFolder = zip.folder('AxiomPath') || zip;
+
+  for (const file of ANDROID_FILES) {
+    rootFolder.file(file.path, file.content);
+  }
+
+  // Generate binary ZIP blob
+  const blob = await zip.generateAsync({
+    type: 'blob',
+    compression: 'DEFLATE',
+    compressionOptions: { level: 6 },
+  });
+
+  // Trigger browser download via Object URL
+  const downloadUrl = URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.href = downloadUrl;
+  anchor.download = 'AxiomPath-Android-Native.zip';
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
+
+  // Clean up Object URL
+  setTimeout(() => {
+    URL.revokeObjectURL(downloadUrl);
+  }, 2000);
 }
